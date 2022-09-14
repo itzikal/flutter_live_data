@@ -19,7 +19,6 @@ class _MyAppState extends State<MyApp> {
   String textToUpdate = "";
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     textToUpdate = liveData.value ?? "";
     token = liveData.register((event) {
@@ -29,6 +28,7 @@ class _MyAppState extends State<MyApp> {
       });
     });
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
     ),
     body: Column(children: [
       TextButton(onPressed: ()=> liveData.add("new value"), child: Text("update live data with new value")),
-      Text("Text: $textToUpdate")
+      Text("Text: $textToUpdate"),
     ])));
   }
 }
