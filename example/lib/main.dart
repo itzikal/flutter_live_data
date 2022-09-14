@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_live_data/live_data.dart';
-import 'package:flutter_live_data/live_data_token.dart';
+import 'package:stream_live_data/live_data.dart';
+import 'package:stream_live_data/live_data_builder.dart';
+import 'package:stream_live_data/live_data_token.dart';
 
 void main() {
   runApp(const MyApp());
@@ -45,6 +46,11 @@ class _MyAppState extends State<MyApp> {
     body: Column(children: [
       TextButton(onPressed: ()=> liveData.add("new value"), child: Text("update live data with new value")),
       Text("Text: $textToUpdate"),
+      LiveDataBuilder(
+          liveData: liveData,
+          builder: (context, snapshot) {
+            return Text("builder: ${snapshot.data}");
+      })
     ])));
   }
 }

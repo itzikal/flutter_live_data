@@ -16,6 +16,11 @@ class LiveData<T> {
     _connectedToken = LiveDataToken(stream.listen((event) {add(event);}));
   }
 
+  Stream<T> asStream()  {
+    _createController();
+    return _controller!.stream;
+  }
+
   LiveDataToken register(void Function(T event) onData) {
      _createController();
      return LiveDataToken(_controller!.stream.listen(onData));
