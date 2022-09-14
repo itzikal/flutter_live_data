@@ -1,15 +1,39 @@
-# flutter_live_data
-
-A new Flutter project.
+# STREAM TO LIVE DATA
+Flutter Streams wrapped for easy use.
 
 ## Getting Started
+Add Dependency
+Add below dependency in pubspec.yaml.
+```
+dependencies:
+    stream_live_data: ^0.0.2
+```
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+* Initialize LiveStream Instance
+  You can create instance as below.
+```dart
+    LiveData<String> liveData = LiveData<String>();
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+*Subscribe to changes
+Register to LiveData changes
+```dart
+    LiveDataToken token = liveData.register((event) {
+      print("Rvent Received: $event");
+    });
+```
 
+*Update Live Data Value
+```dart
+  liveData.add(newValue);
+```
+
+*Clean up
+Don't forget to unregister when done
+```dart
+  liveData.unRegister(token);
+or
+  token.cancel();
+```
+
+Enjoy.
