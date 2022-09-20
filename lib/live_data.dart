@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'live_data_token.dart';
 
+typedef R Tranformation<A,B,R>(A? a, B? b);
+
 class LiveData<T> {
   StreamController<T>? _controller;
   LiveDataToken? _connectedToken;
@@ -59,6 +61,22 @@ class LiveData<T> {
     _registeredLiveData.add(token);
 
     return mappedLiveData;
+  }
+
+  static LiveData<R?> transform<A,B,R>(LiveData<A?> A, LiveData<B?> B, Tranformation<A?,B?,R?> transform){
+
+    LiveData<R?> result = LiveData<R>(initValue: transform(A.value,B.value));
+
+    LiveDataToken tokenA = A.register((event) {
+      result.add(transform(event, B.value));
+    });
+    LiveDataToken tokenB = B.register((event) {
+      result.add(transform(A.value, event));
+    });
+    result._registeredLiveData.add(tokenA);
+    result._registeredLiveData.add(tokenB);
+
+    return result;
   }
 
   dispose(){

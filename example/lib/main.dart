@@ -16,7 +16,16 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final LiveData<String> liveData = LiveData<String>(initValue: "first value");
+  final LiveData<String> filter = LiveData<String>();
+  final LiveData<List<String>> list = LiveData<List<String>>(initValue: ["a", "b", "c"]);
+
+  late final LiveData<List<String>?> filteredList = LiveData.transform<String?, List<String>?, List<String>?>(filter, list, (a, b) {
+      if(a?.isEmpty == true) return b;
+      return b?.where((element) => element == a).toList();
+  });
+
   LiveDataToken? token;
+  LiveDataToken? filterToken;
   String textToUpdate = "";
   @override
   void initState() {
@@ -28,12 +37,18 @@ class _MyAppState extends State<MyApp> {
         textToUpdate = event;
       });
     });
+    filterToken = filteredList.register((event) {
+      setState(() {
+
+      });
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
     token?.cancel();
+    filterToken?.cancel();
   }
 
   @override
@@ -44,7 +59,10 @@ class _MyAppState extends State<MyApp> {
         title: const Text('Live data example app'),
     ),
     body: Column(children: [
+      TextField(onChanged: (value){filter.add(value);}),
+      Text(filteredList.value?.toString()?? ""),
       TextButton(onPressed: ()=> liveData.add("new value"), child: Text("update live data with new value")),
+      TextButton(onPressed: ()=> filter.dispose(), child: Text("kill filter live data")),
       Text("Text: $textToUpdate"),
       LiveDataBuilder(
           liveData: liveData,

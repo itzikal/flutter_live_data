@@ -1,3 +1,7 @@
+## 0.0.6
+LiveData Transformation, 
+Take two live data and combine into one.
+
 ## 0.0.5
 LiveDataBuilder, build ui with builder which except LiveData.
 
