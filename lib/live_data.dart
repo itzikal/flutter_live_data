@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'live_data_token.dart';
 
-typedef R Tranformation<A,B,R>(A? a, B? b);
+typedef Transformation<A,B,R> = R Function(A? a, B? b);
+typedef LiveDataEvent<A> = void Function(A? a);
+typedef LiveDataErrorEvent = void Function(Object a);
 
 class LiveData<T> {
   StreamController<T>? _controller;
@@ -28,9 +30,9 @@ class LiveData<T> {
   }
 
   /// register to changes.
-  LiveDataToken register(void Function(T event) onData) {
+  LiveDataToken register<R>(LiveDataEvent<T> onChange, { LiveDataErrorEvent? onError }) {
      _createController();
-     return LiveDataToken(_controller!.stream.listen(onData));
+     return LiveDataToken(_controller!.stream.listen(onChange, onError: onError));
   }
 
   /// remove registration
@@ -38,6 +40,9 @@ class LiveData<T> {
     await token.cancel();
   }
 
+  void addError(Object error){
+    _controller?.addError(error);
+  }
   /// post a new value.
   /// will notify sll registered listeners, if exist
   /// value will be stored localy
@@ -56,7 +61,9 @@ class LiveData<T> {
     _createController();
     LiveData<R> mappedLiveData = LiveData<R>(initValue: to(_value));
     mappedLiveData._createController();
-    var token = register((event) => mappedLiveData._controller?.add(to(event)));
+    var token = register((event) => mappedLiveData._controller?.add(to(event)),
+        onError:(error) { mappedLiveData.addError(error);});
+
     mappedLiveData._connectedToken = token;
     _registeredLiveData.add(token);
 
@@ -64,11 +71,11 @@ class LiveData<T> {
   }
   /// transform to new LiveData, which bound to changes.
   /// async transformation
-  LiveData<R> mapAsync<R>(FutureOr<R> Function(T event) to) {
+  LiveData<R> mapAsync<R>(FutureOr<R> Function(T? event) to) {
     _createController();
     LiveData<R> mappedLiveData = LiveData<R>();
     mappedLiveData._createController();
-    var token = register((event) async => mappedLiveData._controller?.add(await to(event)));
+    var token = register((event) async => mappedLiveData._controller?.add(await to(event)), onError:(error) { mappedLiveData.addError(error);});
     mappedLiveData._connectedToken = token;
     _registeredLiveData.add(token);
 
@@ -77,16 +84,16 @@ class LiveData<T> {
 
   /// combine two LiveData to new Bounded LiveData.
   /// will get notification on both and emit new notification with transform data.
-  static LiveData<R?> transform<A,B,R>(LiveData<A?> A, LiveData<B?> B, Tranformation<A?,B?,R?> transform){
+  static LiveData<R?> transform<A,B,R>(LiveData<A?> A, LiveData<B?> B, Transformation<A?,B?,R?> transform, {LiveDataErrorEvent? onError}){
 
     LiveData<R?> result = LiveData<R>(initValue: transform(A.value,B.value));
 
     LiveDataToken tokenA = A.register((event) {
       result.add(transform(event, B.value));
-    });
+    }, onError: onError);
     LiveDataToken tokenB = B.register((event) {
       result.add(transform(A.value, event));
-    });
+    }, onError: onError);
     result._registeredLiveData.add(tokenA);
     result._registeredLiveData.add(tokenB);
 

@@ -1,3 +1,6 @@
+## 0.0.7
+Live data with error state.
+
 ## 0.0.6
 LiveData Transformation, 
 Take two live data and combine into one.

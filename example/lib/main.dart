@@ -19,9 +19,16 @@ class _MyAppState extends State<MyApp> {
   final LiveData<String> filter = LiveData<String>();
   final LiveData<List<String>> list = LiveData<List<String>>(initValue: ["a", "b", "c"]);
 
-  late final LiveData<List<String>?> filteredList = LiveData.transform<String?, List<String>?, List<String>?>(filter, list, (a, b) {
-      if(a?.isEmpty == true) return b;
-      return b?.where((element) => element == a).toList();
+  late final LiveData<List<String>?> filteredList =
+      LiveData.transform<String?, List<String>?, List<String>?>(filter, list,
+          (a, b) {
+    if (a?.isEmpty ?? true) return b;
+    textToUpdate = "List filtered";
+    return b?.where((element) => element == a).toList();
+  }, onError: (e) {
+    setState(() {
+      textToUpdate = e.toString();
+    });
   });
 
   LiveDataToken? token;
@@ -34,7 +41,7 @@ class _MyAppState extends State<MyApp> {
     token = liveData.register((event) {
       setState(() {
         //calling set state to update the text
-        textToUpdate = event;
+        textToUpdate = event?? "";
       });
     });
     filterToken = filteredList.register((event) {
@@ -42,6 +49,7 @@ class _MyAppState extends State<MyApp> {
 
       });
     });
+
   }
 
   @override
@@ -61,8 +69,9 @@ class _MyAppState extends State<MyApp> {
     body: Column(children: [
       TextField(onChanged: (value){filter.add(value);}),
       Text(filteredList.value?.toString()?? ""),
-      TextButton(onPressed: ()=> liveData.add("new value"), child: Text("update live data with new value")),
-      TextButton(onPressed: ()=> filter.dispose(), child: Text("kill filter live data")),
+      TextButton(onPressed: ()=> liveData.add("new value"), child: const Text("update live data with new value")),
+      TextButton(onPressed: ()=> filter.dispose(), child: const Text("kill filter live data")),
+      TextButton(onPressed: ()=> filter.addError("Some Error happend"), child: const Text("add error")),
       Text("Text: $textToUpdate"),
       LiveDataBuilder(
           liveData: liveData,
