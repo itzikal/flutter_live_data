@@ -10,28 +10,38 @@ class LiveData<T> {
   T? _value;
   T? get value { return _value; }
 
+  /// Create Live data.
+  /// [initValue] optional initial value.
   LiveData({T? initValue}) {
     _value = initValue;
   }
 
+  /// create Live data out of a stream.
   LiveData.fromStream(Stream<T> stream){
     _connectedToken = LiveDataToken(stream.listen((event) {add(event);}));
   }
 
+  /// back to stream
   Stream<T> asStream()  {
     _createController();
     return _controller!.stream;
   }
 
+  /// register to changes.
   LiveDataToken register(void Function(T event) onData) {
      _createController();
      return LiveDataToken(_controller!.stream.listen(onData));
   }
 
+  /// remove registration
   Future<void> unRegister(LiveDataToken token) async{
     await token.cancel();
   }
 
+  /// post a new value.
+  /// will notify sll registered listeners, if exist
+  /// value will be stored localy
+  /// [value] new value to post.
   void add(T value){
     _value = value;
     var controller = _controller;
@@ -41,6 +51,7 @@ class LiveData<T> {
     controller?.add(value);
   }
 
+  /// transform to new LiveData, which bound to changes.
   LiveData<R> map<R>(R Function(T?) to) {
     _createController();
     LiveData<R> mappedLiveData = LiveData<R>(initValue: to(_value));
@@ -51,7 +62,8 @@ class LiveData<T> {
 
     return mappedLiveData;
   }
-
+  /// transform to new LiveData, which bound to changes.
+  /// async transformation
   LiveData<R> mapAsync<R>(FutureOr<R> Function(T event) to) {
     _createController();
     LiveData<R> mappedLiveData = LiveData<R>();
@@ -63,6 +75,8 @@ class LiveData<T> {
     return mappedLiveData;
   }
 
+  /// combine two LiveData to new Bounded LiveData.
+  /// will get notification on both and emit new notification with transform data.
   static LiveData<R?> transform<A,B,R>(LiveData<A?> A, LiveData<B?> B, Tranformation<A?,B?,R?> transform){
 
     LiveData<R?> result = LiveData<R>(initValue: transform(A.value,B.value));
@@ -79,6 +93,7 @@ class LiveData<T> {
     return result;
   }
 
+  /// close all streams and listeners
   dispose(){
     _registeredLiveData.forEach((element) => element.cancel());
     _registeredLiveData.clear();
