@@ -18,6 +18,10 @@ class LiveData<T> {
     _value = initValue;
   }
 
+  LiveData.from(LiveData<T> other){
+      other.register((a){ if(a!= null) add(a);}, onError: (e)=> addError(e));
+  }
+
   /// create Live data out of a stream.
   LiveData.fromStream(Stream<T> stream){
     _connectedToken = LiveDataToken(stream.listen((event) {add(event);}));
@@ -60,8 +64,7 @@ class LiveData<T> {
   LiveData<R> map<R>(R Function(T?) to) {
     _createController();
     LiveData<R> mappedLiveData = LiveData<R>(initValue: to(_value));
-    mappedLiveData._createController();
-    var token = register((event) => mappedLiveData._controller?.add(to(event)),
+    var token = register((event) => mappedLiveData.add(to(event)),
         onError:(error) { mappedLiveData.addError(error);});
 
     mappedLiveData._connectedToken = token;
@@ -74,8 +77,7 @@ class LiveData<T> {
   LiveData<R> mapAsync<R>(FutureOr<R> Function(T? event) to) {
     _createController();
     LiveData<R> mappedLiveData = LiveData<R>();
-    mappedLiveData._createController();
-    var token = register((event) async => mappedLiveData._controller?.add(await to(event)), onError:(error) { mappedLiveData.addError(error);});
+    var token = register((event) async => mappedLiveData.add(await to(event)), onError:(error) { mappedLiveData.addError(error);});
     mappedLiveData._connectedToken = token;
     _registeredLiveData.add(token);
 

@@ -1,3 +1,7 @@
+## 0.0.8
+Fix LiveData.map didn't hold latest value
+Added Livedata.From, to duplicate live data.
+
 ## 0.0.7
 Live data with error state.
 
