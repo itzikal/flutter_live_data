@@ -39,6 +39,13 @@ class LiveData<T> {
      return LiveDataToken(_controller!.stream.listen(onChange, onError: onError));
   }
 
+  /// register to changes, but will notify change with latest value, when registered for first time
+  LiveDataToken activeRegister<R>(LiveDataEvent<T> onChange, { LiveDataErrorEvent? onError }) {
+    _createController();
+    onChange(value);
+    return LiveDataToken(_controller!.stream.listen(onChange, onError: onError));
+  }
+
   /// remove registration
   Future<void> unRegister(LiveDataToken token) async{
     await token.cancel();
