@@ -1,3 +1,6 @@
+## 0.0.9
+Active register - notify change with latest value to registered class.
+
 ## 0.0.8
 Fix LiveData.map didn't hold latest value
 Added Livedata.From, to duplicate live data.
