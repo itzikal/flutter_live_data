@@ -1,3 +1,6 @@
+## 0.0.10
+Introducing LiveData, MutableLiveData, ListLiveData
+
 ## 0.0.9
 Active register - notify change with latest value to registered class.
 

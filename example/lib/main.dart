@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:stream_live_data/live_data.dart';
 import 'package:stream_live_data/live_data_builder.dart';
@@ -15,10 +17,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final LiveData<String> liveData = LiveData<String>(initValue: "first value");
-  final LiveData<String> filter = LiveData<String>();
-  final LiveData<List<String>> list = LiveData<List<String>>(initValue: ["a", "b", "c"]);
-
+  final MutableLiveData<String> liveData = MutableLiveData<String>(initValue: "first value");
+  final MutableLiveData<String> filter = MutableLiveData<String>();
+  final MutableLiveData<List<String>> list = MutableLiveData<List<String>>(initValue: ["a", "b", "c"]);
+  final StreamController<String> controller = StreamController<String>.broadcast();
+  late final LiveData<String> fromStream = LiveData.fromStream(stream: controller.stream);
+  late final LiveData<String> fromStream2 = fromStream.map((e) => "e+ ${e??""}");
   late final LiveData<List<String>?> filteredList =
       LiveData.transform<String?, List<String>?, List<String>?>(filter, list,
           (a, b) {
@@ -49,7 +53,11 @@ class _MyAppState extends State<MyApp> {
 
       });
     });
-
+  controller.stream.listen((event) {
+    setState(() {
+      textToUpdate = event.toString();
+    });
+  });
   }
 
   @override
@@ -72,12 +80,19 @@ class _MyAppState extends State<MyApp> {
       TextButton(onPressed: ()=> liveData.add("new value"), child: const Text("update live data with new value")),
       TextButton(onPressed: ()=> filter.dispose(), child: const Text("kill filter live data")),
       TextButton(onPressed: ()=> filter.addError("Some Error happend"), child: const Text("add error")),
+      TextButton(onPressed: ()=> controller.add("a ${fromStream.value??""}"), child: const Text("Add Data to StreamControler")),
+      TextButton(onPressed: ()=> fromStream.dispose(), child: const Text("kill fromstream")),
       Text("Text: $textToUpdate"),
       LiveDataBuilder(
           liveData: liveData,
           builder: (context, snapshot) {
             return Text("builder: ${snapshot.data}");
-      })
+      }),
+      LiveDataBuilder(
+          liveData: fromStream,
+          builder: (context, snapshot) {
+            return Text("fromStream: ${snapshot.data}");
+          })
     ])));
   }
 }
