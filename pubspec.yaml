@@ -1,6 +1,6 @@
 name: stream_live_data
 description: Flutter stream made easy
-version: 0.0.10
+version: 0.0.11
 homepage: https://github.com/itzikal/flutter_live_data
 
 environment:
