@@ -19,7 +19,7 @@ class LiveData<T> {
 
   /// Create Live data.
   /// [initValue] optional initial value.
-  LiveData({required T initValue}) :
+  LiveData._({required T initValue}) :
     _value = initValue;
 
 

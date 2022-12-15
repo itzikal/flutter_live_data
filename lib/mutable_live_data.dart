@@ -2,7 +2,7 @@ part of 'live_data.dart';
 
 class MutableLiveData<T> extends LiveData<T>{
 
-  MutableLiveData({required T initValue}) :super(initValue:  initValue);
+  MutableLiveData({required T initValue}) :super._(initValue:  initValue);
 
   void addError(Object error){
     _controller?.addError(error);

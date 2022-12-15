@@ -1,3 +1,6 @@
+## 0.0.12
+Better LiveData, MutableLiveData, ListLiveData
+
 ## 0.0.11
 Better LiveData, MutableLiveData, ListLiveData
 
