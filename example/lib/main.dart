@@ -18,10 +18,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final MutableLiveData<String> liveData = MutableLiveData<String>(initValue: "first value");
-  final MutableLiveData<String> filter = MutableLiveData<String>();
+  final MutableLiveData<String> filter = MutableLiveData<String>(initValue: "");
   final MutableLiveData<List<String>> list = MutableLiveData<List<String>>(initValue: ["a", "b", "c"]);
   final StreamController<String> controller = StreamController<String>.broadcast();
-  late final LiveData<String> fromStream = LiveData.fromStream(stream: controller.stream);
+  late final LiveData<String> fromStream = LiveData.fromStream(stream: controller.stream, initValue: "");
   late final LiveData<String> fromStream2 = fromStream.map((e) => "e+ ${e??""}");
   late final LiveData<List<String>?> filteredList =
       LiveData.transform<String?, List<String>?, List<String>?>(filter, list,

@@ -1,36 +1,93 @@
-import 'package:stream_live_data/live_data.dart';
+part of 'live_data.dart';
 
 class ListLiveData<T> extends MutableLiveData<List<T>>{
-  List<T> get _list => value == null ? [] : value!;
 
-  ListLiveData({List<T>? initValue}): super(initValue: initValue);
+  ListLiveData({List<T>? initValue}): super(initValue: []);
 
-  void sort([int compare(T a, T b)?]){
-    _list.sort(compare);
-    notifyChanged();
+  T operator [](int index) {
+    return _value[index];
   }
 
-  void reversed(){
-    add(_list.reversed.toList());
+  void operator []=(int index, T value) {
+    _value[index] = value;
+    notifyDataChanged();
   }
 
-  void addItem(T item){
-    List<T> list =  _list;
-    list.add(item);
-    notifyChanged();
+  void addItem(T value) {
+    _value.add(value);
+    notifyDataChanged();
   }
 
-  void addItems(List<T> items){
-    List<T> list =  _list;
-    list.addAll(items);
-    notifyChanged();
+  void addItems(Iterable<T> iterable) {
+    _value.addAll(iterable);
+    notifyDataChanged();
   }
 
-  void clear(){
-    add([]);
+  bool any(bool Function(T element) test) => _value.any(test);
+
+  Map<int, T> asMap() => _value.asMap();
+
+  void clear() {
+    _value.clear();
+    notifyDataChanged();
   }
 
-  void notifyChanged(){
-    add(_list);
+  bool contains(Object? element) => _value.contains(element);
+
+  T elementAt(int index) => _value.elementAt(index);
+
+  bool every(bool Function(T element) test) => _value.every(test);
+
+  T firstWhere(bool Function(T element) test, {T Function()? orElse}) => _value.firstWhere(test ,orElse: orElse);
+
+  void forEach(void Function(T element) action) => _value.forEach(action);
+
+  int indexOf(T element, [int start = 0]) => _value.indexOf(element, start);
+
+  int indexWhere(bool Function(T element) test, [int start = 0]) => _value.indexWhere(test, start);
+
+  void insert(int index, T element) {
+    _value.insert(index, element);
+    notifyDataChanged();
+  }
+
+  void insertAll(int index, Iterable<T> iterable) {
+    _value.insertAll(index, iterable);
+    notifyDataChanged();
+  }
+
+  bool get isEmpty => _value.isEmpty;
+
+  bool get isNotEmpty => _value.isNotEmpty;
+
+  Iterator<T> get iterator => _value.iterator;
+
+  T lastWhere(bool Function(T element) test, {T Function()? orElse}) => _value.lastWhere(test, orElse: orElse);
+
+  void removeItem(Object? value) {
+    _value.remove(value);
+    notifyDataChanged();
+  }
+
+  void removeAt(int index) {
+    _value.removeAt(index);
+    notifyDataChanged();
+  }
+
+  void removeWhere(bool Function(T element) test) {
+    _value.removeWhere(test);
+    notifyDataChanged();
+  }
+
+  @override
+  void shuffle([Random? random]) {
+    _value.shuffle(random);
+    notifyDataChanged();
+  }
+
+  @override
+  void sort([int Function(T a, T b)? compare]) {
+    _value.sort(compare);
+    notifyDataChanged();
   }
 }
