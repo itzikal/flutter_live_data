@@ -5,6 +5,7 @@ class MutableLiveData<T> extends LiveData<T>{
   MutableLiveData({required T initValue}) :super._(initValue:  initValue);
 
   void addError(Object error){
+    _error = error;
     _controller?.addError(error);
   }
   /// post a new value.
@@ -12,6 +13,7 @@ class MutableLiveData<T> extends LiveData<T>{
   /// value will be stored localy
   /// [value] new value to post.
   void add(T value){
+    _error = null;
     _value = value;
     var controller = _controller;
     if((controller?.isClosed ?? true)){
