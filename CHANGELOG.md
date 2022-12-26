@@ -1,3 +1,6 @@
+## 0.0.13
+Handle Errors
+
 ## 0.0.12
 Better LiveData, MutableLiveData, ListLiveData
 
