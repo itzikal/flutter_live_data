@@ -17,6 +17,9 @@ class LiveData<T> {
   T _value;
   T get value { return _value; }
 
+  Object? _error;
+  bool get hasError => _error != null;
+
   /// Create Live data.
   /// [initValue] optional initial value.
   LiveData._({required T initValue}) :
@@ -24,11 +27,16 @@ class LiveData<T> {
 
 
   /// create Live data out of a stream.
-  LiveData.fromStream({required Stream<T> stream, required T initValue}) : _value = initValue{
+  LiveData.fromStream({required Stream<T> stream, required T initValue})
+      : _value = initValue{
     _fromStream = true;
     _createController();
     _controller!.addStream(stream);
-    _connectedToken = LiveDataToken(_controller!.stream.listen((event) {_value = event;}));
+    _connectedToken = LiveDataToken(_controller!.stream.listen((event) {
+      _error = null;
+      _value = event;
+    },
+        onError: (e) => _error = e));
   }
 
   /// back to stream
@@ -46,7 +54,11 @@ class LiveData<T> {
   /// register to changes, but will notify change with latest value, when registered for first time
   LiveDataToken activeRegister<R>(LiveDataEvent<T> onChange, { LiveDataErrorEvent? onError }) {
     _createController();
-    onChange(value);
+    if(hasError) {
+        onError?.call(_error!);
+    }else{
+      onChange(value);
+    }
     return LiveDataToken(_controller!.stream.listen(onChange, onError: onError));
   }
 
