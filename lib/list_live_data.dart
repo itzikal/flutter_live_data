@@ -4,8 +4,8 @@ class ListLiveData<T> extends MutableLiveData<List<T>?>{
 
   ListLiveData({List<T>? initValue}): super(initValue: initValue);
 
-  T? operator [](int index) {
-    return _initList?[index];
+  T operator [](int index) {
+    return _initList[index];
   }
   
   List<T> get _initList {
