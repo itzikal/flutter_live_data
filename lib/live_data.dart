@@ -6,6 +6,7 @@ part 'mutable_live_data.dart';
 part 'list_live_data.dart';
 
 typedef Transformation<A,B,R> = R Function(A a, B b);
+typedef TripleTransformation<A,B,C,R> = R Function(A a, B b, C c);
 typedef LiveDataEvent<A> = void Function(A a);
 typedef LiveDataErrorEvent = void Function(Object a);
 
@@ -103,6 +104,28 @@ class LiveData<T> {
     }, onError: onError);
     result._registeredLiveData.add(tokenA);
     result._registeredLiveData.add(tokenB);
+
+    return result;
+  }
+
+  /// combine two LiveData to new Bounded LiveData.
+  /// will get notification on both and emit new notification with transform data.
+  static LiveData<R> tripleTransform<A,B,C,R>(LiveData<A> A, LiveData<B> B,LiveData<C> C, TripleTransformation<A,B,C,R> transform, {LiveDataErrorEvent? onError}){
+
+    MutableLiveData<R> result = MutableLiveData<R>(initValue: transform(A.value,B.value, C.value));
+
+    LiveDataToken tokenA = A.register((event) {
+      result.add(transform(event, B.value, C.value));
+    }, onError: onError);
+    LiveDataToken tokenB = B.register((event) {
+      result.add(transform(A.value, event, C.value));
+    }, onError: onError);
+    LiveDataToken tokenC = C.register((event) {
+      result.add(transform(A.value, B.value, event));
+    }, onError: onError);
+    result._registeredLiveData.add(tokenA);
+    result._registeredLiveData.add(tokenB);
+    result._registeredLiveData.add(tokenC);
 
     return result;
   }

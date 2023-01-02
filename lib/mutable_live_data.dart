@@ -1,8 +1,9 @@
 part of 'live_data.dart';
 
 class MutableLiveData<T> extends LiveData<T>{
+  final bool notifyOnChangeOnly;
 
-  MutableLiveData({required T initValue}) :super._(initValue:  initValue);
+  MutableLiveData({required T initValue, this.notifyOnChangeOnly = false}) :super._(initValue:  initValue);
 
   void addError(Object error){
     _error = error;
@@ -14,6 +15,9 @@ class MutableLiveData<T> extends LiveData<T>{
   /// [value] new value to post.
   void add(T value){
     _error = null;
+    if(notifyOnChangeOnly && _value == value){
+      return;
+    }
     _value = value;
     var controller = _controller;
     if((controller?.isClosed ?? true)){
