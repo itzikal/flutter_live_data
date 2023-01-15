@@ -1,5 +1,5 @@
-## 0.0.15
-LiveData from ChangeNotifier
+## 0.0.16
+Triple transformation
 
 ## 0.0.14
 List fixes
