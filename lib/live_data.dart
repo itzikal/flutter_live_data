@@ -69,7 +69,7 @@ class LiveData<T> {
   }
 
   /// transform to new LiveData, which bound to changes.
-  LiveData<R> map<R>(R Function(T?) to) {
+  LiveData<R> map<R>(R Function(T) to) {
     MutableLiveData<R> mappedLiveData = MutableLiveData<R>(initValue: to(_value));
     var token = register((event) => mappedLiveData.add(to(event)),
         onError:(error) { mappedLiveData.addError(error);});
