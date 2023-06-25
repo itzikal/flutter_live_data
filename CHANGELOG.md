@@ -1,3 +1,6 @@
+## 0.0.17
+Fix Null safety on map
+
 ## 0.0.16
 Triple transformation
 
