@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'live_data.dart';
+part of '../stream_live_data.dart';
+
 
 class LiveDataBuilder<T> extends StatelessWidget {
   final T? initialData;
