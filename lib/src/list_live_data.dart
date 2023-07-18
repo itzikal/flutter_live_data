@@ -1,4 +1,4 @@
-part of 'live_data.dart';
+part of '../stream_live_data.dart';
 
 class ListLiveData<T> extends MutableLiveData<List<T>?>{
 

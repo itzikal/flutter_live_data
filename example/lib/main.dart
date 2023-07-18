@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:stream_live_data/live_data.dart';
-import 'package:stream_live_data/live_data_builder.dart';
-import 'package:stream_live_data/live_data_token.dart';
+import 'package:stream_live_data/stream_live_data.dart';
 
 void main() {
   runApp(const MyApp());

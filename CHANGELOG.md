@@ -1,3 +1,6 @@
+## 0.0.18
+Web support
+
 ## 0.0.17
 Fix Null safety on map
 
@@ -30,7 +33,7 @@ Added Livedata.From, to duplicate live data.
 Live data with error state.
 
 ## 0.0.6
-LiveData Transformation, 
+LiveData Transformation,
 Take two live data and combine into one.
 
 ## 0.0.5
@@ -39,4 +42,3 @@ LiveDataBuilder, build ui with builder which except LiveData.
 ## 0.0.4
 Live data wraps flutter streams to make them easy to handle.
 just create LiveData for your preferable type and register for changes.
-
