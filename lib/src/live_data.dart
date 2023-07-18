@@ -1,9 +1,6 @@
-import 'dart:async';
-import 'dart:math';
-import 'live_data_token.dart';
+part of '../stream_live_data.dart';
 
-part 'mutable_live_data.dart';
-part 'list_live_data.dart';
+
 
 typedef Transformation<A,B,R> = R Function(A a, B b);
 typedef TripleTransformation<A,B,C,R> = R Function(A a, B b, C c);
