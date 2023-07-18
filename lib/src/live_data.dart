@@ -21,7 +21,7 @@ class LiveData<T> {
   /// Create Live data.
   /// [initValue] optional initial value.
   LiveData._({required T initValue}) :
-    _value = initValue;
+        _value = initValue;
 
 
   /// create Live data out of a stream.
@@ -45,15 +45,15 @@ class LiveData<T> {
 
   /// register to changes.
   LiveDataToken register<R>(LiveDataEvent<T> onChange, { LiveDataErrorEvent? onError }) {
-     _createController();
-     return LiveDataToken(_controller!.stream.listen(onChange, onError: onError));
+    _createController();
+    return LiveDataToken(_controller!.stream.listen(onChange, onError: onError));
   }
 
   /// register to changes, but will notify change with latest value, when registered for first time
   LiveDataToken activeRegister<R>(LiveDataEvent<T> onChange, { LiveDataErrorEvent? onError }) {
     _createController();
     if(hasError) {
-        onError?.call(_error!);
+      onError?.call(_error!);
     }else{
       onChange(value);
     }
@@ -89,15 +89,15 @@ class LiveData<T> {
 
   /// combine two LiveData to new Bounded LiveData.
   /// will get notification on both and emit new notification with transform data.
-  static LiveData<R> transform<A,B,R>(LiveData<A> A, LiveData<B> B, Transformation<A,B,R> transform, {LiveDataErrorEvent? onError}){
+  static LiveData<R> transform<A,B,R>(LiveData<A> a, LiveData<B> b, Transformation<A,B,R> transform, {LiveDataErrorEvent? onError}){
 
-    MutableLiveData<R> result = MutableLiveData<R>(initValue: transform(A.value,B.value));
+    MutableLiveData<R> result = MutableLiveData<R>(initValue: transform(a.value,b.value));
 
-    LiveDataToken tokenA = A.register((event) {
-      result.add(transform(event, B.value));
+    LiveDataToken tokenA = a.register((event) {
+      result.add(transform(event, b.value));
     }, onError: onError);
-    LiveDataToken tokenB = B.register((event) {
-      result.add(transform(A.value, event));
+    LiveDataToken tokenB = b.register((event) {
+      result.add(transform(a.value, event));
     }, onError: onError);
     result._registeredLiveData.add(tokenA);
     result._registeredLiveData.add(tokenB);
@@ -107,18 +107,18 @@ class LiveData<T> {
 
   /// combine two LiveData to new Bounded LiveData.
   /// will get notification on both and emit new notification with transform data.
-  static LiveData<R> tripleTransform<A,B,C,R>(LiveData<A> A, LiveData<B> B,LiveData<C> C, TripleTransformation<A,B,C,R> transform, {LiveDataErrorEvent? onError}){
+  static LiveData<R> tripleTransform<A,B,C,R>(LiveData<A> a, LiveData<B> b,LiveData<C> c, TripleTransformation<A,B,C,R> transform, {LiveDataErrorEvent? onError}){
 
-    MutableLiveData<R> result = MutableLiveData<R>(initValue: transform(A.value,B.value, C.value));
+    MutableLiveData<R> result = MutableLiveData<R>(initValue: transform(a.value,b.value, c.value));
 
-    LiveDataToken tokenA = A.register((event) {
-      result.add(transform(event, B.value, C.value));
+    LiveDataToken tokenA = a.register((event) {
+      result.add(transform(event, b.value, c.value));
     }, onError: onError);
-    LiveDataToken tokenB = B.register((event) {
-      result.add(transform(A.value, event, C.value));
+    LiveDataToken tokenB = b.register((event) {
+      result.add(transform(a.value, event, c.value));
     }, onError: onError);
-    LiveDataToken tokenC = C.register((event) {
-      result.add(transform(A.value, B.value, event));
+    LiveDataToken tokenC = c.register((event) {
+      result.add(transform(a.value, b.value, event));
     }, onError: onError);
     result._registeredLiveData.add(tokenA);
     result._registeredLiveData.add(tokenB);
