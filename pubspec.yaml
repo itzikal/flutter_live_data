@@ -1,10 +1,10 @@
 name: stream_live_data
 description: Flutter stream made easy
-version: 0.0.18
+version: 0.0.19
 homepage: https://github.com/itzikal/flutter_live_data
 
 environment:
-  sdk: ">=2.17.6 <3.0.0"
+  sdk: '>=2.17.0 <3.7.1'
   flutter: ">=2.5.0"
 
 dependencies:
