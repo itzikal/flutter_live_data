@@ -107,6 +107,24 @@ class LiveData<T> {
 
   /// combine two LiveData to new Bounded LiveData.
   /// will get notification on both and emit new notification with transform data.
+  static LiveData<List<A>> groupLiveData<A>(List<LiveData<A>> list, {LiveDataErrorEvent? onError}){
+    List<A> result =  [];
+    MutableLiveData<List<A>> group = MutableLiveData<List<A>>(initValue: result);
+
+    for(int i = 0; i < list.length; i++ ){
+      result.insert(i, list[i].value);
+        var token = list[i].register((a) {
+          result[i] = a;
+          group.notifyDataChanged();
+        },onError:  onError);
+        group._registeredLiveData.add(token);
+    }
+
+    return group;
+  }
+
+  /// combine two LiveData to new Bounded LiveData.
+  /// will get notification on both and emit new notification with transform data.
   static LiveData<R> tripleTransform<A,B,C,R>(LiveData<A> a, LiveData<B> b,LiveData<C> c, TripleTransformation<A,B,C,R> transform, {LiveDataErrorEvent? onError}){
 
     MutableLiveData<R> result = MutableLiveData<R>(initValue: transform(a.value,b.value, c.value));
